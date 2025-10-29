@@ -73,7 +73,7 @@
             backdrop-filter: blur(3px);
             -webkit-backdrop-filter: blur(3px);
             opacity: 0.98;
-            transition: all 0.3s ease;
+            transition: all 0.3 ease;
             z-index: 9999;
         }
 
@@ -140,7 +140,7 @@
                 windowEl.style.opacity = "0";
                 windowEl.style.transform = "scale(0.8)";
                 setTimeout(() => windowEl.remove(), 300);
-            }, 5000);
+            }, 10000);
         }
 
         function createParticle() {
@@ -171,9 +171,10 @@
         }
 
         window.onload = () => {
-            startFloatWindows(1000, 200);
+            startFloatWindows(1000, 100);
         };
     </script>
 </body>
 
 </html>
+
