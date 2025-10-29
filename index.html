@@ -14,21 +14,6 @@
             background: linear-gradient(135deg, #000000, #000f1f);
             min-height: 100vh;
             overflow: hidden;
-            position: relative;
-        }
-
-        .heart-guide {
-            position: absolute;
-            width: 80vw;
-            height: 80vw;
-            left: 10vw;
-            top: 10vh;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='0.5'%3E%3Cpath d='M50,10 C30,10 10,30 10,50 C10,70 30,90 50,95 C70,90 90,70 90,50 C90,30 70,10 50,10 Z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            z-index: 1;
-            pointer-events: none;
         }
 
         .particle {
@@ -62,26 +47,26 @@
 
         .float-window {
             position: fixed;
-            width: 220px; /* 增大浮窗宽度 */
-            height: 80px; /* 增大浮窗高度 */
-            padding: 15px;
-            border-radius: 15px;
+            width: 280px; /* 进一步增大宽度 */
+            height: 100px; /* 进一步增大高度 */
+            padding: 20px;
+            border-radius: 18px; /* 相应增大圆角 */
             border: 2px solid transparent;
             background: 
                 linear-gradient(var(--bg-inner), var(--bg-inner)) padding-box,
                 linear-gradient(135deg, var(--border-start), var(--border-end)) border-box;
             box-shadow: 
-                0 0 8px var(--border-start) inset,
-                0 0 15px var(--border-end),
-                0 3px 15px rgba(0, 0, 0, 0.3);
+                0 0 10px var(--border-start) inset,
+                0 0 20px var(--border-end),
+                0 4px 20px rgba(0, 0, 0, 0.3);
             font-family: "微软雅黑", "PingFang SC", sans-serif;
-            font-size: 16px; /* 增大字体 */
+            font-size: 18px; /* 增大字体大小以匹配浮窗 */
             font-weight: 600;
             color: #fff;
             text-align: center;
-            line-height: 50px; /* 调整行高适配新高度 */
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
+            line-height: 60px; /* 调整行高适配新高度 */
+            backdrop-filter: blur(4px); /* 稍微增强模糊效果 */
+            -webkit-backdrop-filter: blur(4px);
             opacity: 0.98;
             transition: all 0.3s ease;
             z-index: 9999;
@@ -90,9 +75,9 @@
         .float-window:hover {
             transform: scale(1.1);
             box-shadow: 
-                0 0 12px var(--border-start) inset,
-                0 0 25px var(--border-end),
-                0 5px 20px rgba(0, 0, 0, 0.4);
+                0 0 15px var(--border-start) inset,
+                0 0 30px var(--border-end),
+                0 6px 25px rgba(0, 0, 0, 0.4);
             opacity: 1;
         }
 
@@ -106,8 +91,6 @@
     </style>
 </head>
 <body>
-    <div class="heart-guide"></div>
-
     <script>
         const messages = [
             "天冷了，多穿衣服❄️",
@@ -129,30 +112,6 @@
             { symbol: "❧", type: "heart" }
         ];
 
-        function getRandomPointInHeart() {
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-            
-            const scale = Math.min(screenWidth, screenHeight) * 0.8;
-            const centerX = screenWidth / 2;
-            const centerY = screenHeight / 2 + scale * 0.1;
-
-            let x, y;
-            do {
-                const t = Math.random() * Math.PI * 2;
-                const r = 10 * (1 + Math.cos(t));
-                
-                x = centerX + (r * Math.sin(t) * scale / 20);
-                y = centerY - (r * Math.cos(t) * scale / 20);
-            } while (
-                // 适配更大的浮窗，调整边界限制
-                x < 110 || x > screenWidth - 110 || 
-                y < 40 || y > screenHeight - 40
-            );
-
-            return { x, y };
-        }
-
         function createFloatWindow() {
             const windowEl = document.createElement("div");
             windowEl.className = "float-window";
@@ -161,18 +120,23 @@
             windowEl.textContent = randomMsg;
             windowEl.classList.add(randomColor);
             
-            const { x, y } = getRandomPointInHeart();
-            windowEl.style.left = `${x - 110}px`; // 适配新宽度的一半
-            windowEl.style.top = `${y - 40}px`;  // 适配新高度的一半
+            // 全屏幕随机位置，适配更大的浮窗尺寸
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            // 计算随机位置，确保浮窗完全显示在屏幕内
+            const x = Math.floor(Math.random() * (screenWidth - 280));
+            const y = Math.floor(Math.random() * (screenHeight - 100));
+            windowEl.style.left = `${x}px`;
+            windowEl.style.top = `${y}px`;
             
             document.body.appendChild(windowEl);
 
-            // 改为10秒后消失
+            // 10秒后自动消失
             setTimeout(() => {
                 windowEl.style.opacity = "0";
                 windowEl.style.transform = "scale(0.8)";
                 setTimeout(() => windowEl.remove(), 300);
-            }, 10000); // 10000毫秒 = 10秒
+            }, 10000);
         }
 
         function createParticle() {
@@ -180,7 +144,7 @@
             const randomParticle = particles[Math.floor(Math.random() * particles.length)];
             particleEl.className = `particle ${randomParticle.type}`;
             particleEl.textContent = randomParticle.symbol;
-            particleEl.style.fontSize = `${Math.random() * 15 + 10}px`;
+            particleEl.style.fontSize = `${Math.random() * 20 + 15}px`; // 粒子也稍大一点，保持比例
             particleEl.style.left = `${Math.random() * 100}vw`;
             particleEl.style.top = "-20px";
             particleEl.style.animationDuration = `${Math.random() * 8 + 5}s`;
@@ -202,7 +166,7 @@
         }
 
         window.onload = () => {
-            startFloatWindows(1000, 150); // 第二个参数设置为150毫秒生成一个
+            startFloatWindows(1000, 150);
         };
     </script>
 </body>
